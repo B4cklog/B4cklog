@@ -1,0 +1,9 @@
+[submodule "server"]
+	path = server
+	url = https://github.com/B4cklog/B4cklog-Server.git
+[submodule "client"]
+	path = client
+	url = https://github.com/B4cklog/B4cklog-Mobile.git
+[submodule "web"]
+	path = web
+	url = https://github.com/B4cklog/B4cklog-Web.git
