@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: b4cklog-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-b4cklog}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-b4cklog}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-b4cklog}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - b4cklog-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: b4cklog-server
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE:-b4cklog}?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-b4cklog}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: false
+    volumes:
+      - ./server/src:/app/src
+      - ./server/build:/app/build
+      - ./server/.env:/app/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - b4cklog-network
+
+  # Frontend
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: b4cklog-web
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - b4cklog-network
+
+networks:
+  b4cklog-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local 
