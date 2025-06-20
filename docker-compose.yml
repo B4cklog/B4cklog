@@ -33,6 +33,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-b4cklog}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: false
+      IGDB_CLIENT_ID: ${IGDB_CLIENT_ID}
+      IGDB_CLIENT_SECRET: ${IGDB_CLIENT_SECRET}
     volumes:
       - ./server/src:/app/src
       - ./server/build:/app/build
