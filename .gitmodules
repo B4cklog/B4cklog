@@ -7,3 +7,6 @@
 [submodule "web"]
 	path = web
 	url = https://github.com/B4cklog/B4cklog-Web.git
+[submodule "docs"]
+	path = docs
+	url = https://github.com/B4cklog/B4cklog-Docs.git
